@@ -49,11 +49,13 @@ export default function Layout() {
             <Drawer
                 variant="permanent"
                 sx={{
-                    width: 240,
-                    '& .MuiDrawer-paper': {
-                        width: 240,
-                        background: '#0b3c8c',
-                        color: 'white'
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    [`& .MuiDrawer-paper`]: {
+                        width: drawerWidth,
+                        boxSizing: "border-box",
+                        marginTop: "64px",
+                        background: "#053f93"
                     }
                 }}
             >
@@ -84,7 +86,14 @@ export default function Layout() {
 
             <Box
                 component="main"
-                sx={{ flexGrow: 1, ml: `${drawerWidth}px`, mt: 8 }}
+                sx={{
+                    flexGrow: 1,
+                    ml: `${drawerWidth}px`,
+                    mt: 8,
+                    p: 2,
+                    background: "#e7f0ff",
+                    minHeight: "100vh"
+                }}
             >
                 <Outlet />
             </Box>

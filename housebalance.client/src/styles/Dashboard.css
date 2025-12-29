@@ -28,7 +28,6 @@
 .dashboard-charts {
     margin-top: 50px;
     width: 100%;
-    max-width: 800px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -38,8 +37,9 @@
     font-size: 1.6rem;
     margin-bottom: 15px;
     font-weight: 500;
+    color: midnightblue;
 }
 
 .dashboard-table .MuiTableCell-root {
-    color: #e0e6ff !important;
+    color: midnightblue;
 }

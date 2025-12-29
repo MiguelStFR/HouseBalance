@@ -11,6 +11,7 @@ import {
 } from "recharts";
 
 import "../styles/Dashboard.css";
+import "../styles/Layout.css";
 
 interface PessoaTotais {
     pessoaId: number;
@@ -64,7 +65,7 @@ export default function Dashboard() {
 
     return (
         <Container maxWidth="lg" className="dashboard-container">
-            <Typography className="dashboard-title">
+            <Typography className="page-title">
                 Dashboard Financeiro
             </Typography>
 
