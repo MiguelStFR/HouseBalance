@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { api } from "../Api";
 import {
-    Card, CardContent, Typography, Grid, Container, Table,
-    TableHead, TableRow, TableCell, TableBody, Box
+    Card, CardContent, Typography, Table,
+    TableHead, TableRow, TableCell, TableBody, Box, Container
 } from "@mui/material";
 
 import {
     PieChart, Pie, Cell, Tooltip, Legend,
     BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
+
+import "../styles/Dashboard.css";
 
 interface PessoaTotais {
     pessoaId: number;
@@ -38,17 +40,14 @@ export default function Dashboard() {
     const [categorias, setCategorias] = useState<Wrapper<CategoriaTotais>>();
 
     const carregar = async () => {
-        try
-        {
+        try {
             const p = await api.get<Wrapper<PessoaTotais>>("/pessoas/totais");
             const c = await api.get<Wrapper<CategoriaTotais>>("/categorias/totais");
 
             setPessoas(p.data);
             setCategorias(c.data);
         }
-        catch (e)
-        {
-            console.error("Erro ao carregar DashBoard", e);
+        catch {
             alert("Erro ao carregar DashBoard");
         }
     };
@@ -57,8 +56,6 @@ export default function Dashboard() {
         carregar();
     }, []);
 
-    const CORES = ["#4caf50", "#2196f3", "#f44336", "#ff9800", "#9c27b0"];
-
     const saldoPorPessoa = (pessoas?.itens ?? []).map(p => ({
         ...p,
         valorAbsoluto: Math.abs(p.saldo),
@@ -66,102 +63,95 @@ export default function Dashboard() {
     }));
 
     return (
-        <Container maxWidth="lg">
-            <Typography variant="h4" gutterBottom>
+        <Container maxWidth="lg" className="dashboard-container">
+            <Typography className="dashboard-title">
                 Dashboard Financeiro
             </Typography>
 
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">Total Receitas</Typography>
-                            <Typography variant="h4" color="green">
-                                R$ {pessoas?.totalReceitas?.toFixed(2) ?? 0}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
+            <div className="dashboard-cards">
 
-                <Grid item xs={12} md={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">Total Despesas</Typography>
-                            <Typography variant="h4" color="red">
-                                R$ {pessoas?.totalDespesas?.toFixed(2) ?? 0}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
+                <Card className="dashboard-card" elevation={4}>
+                    <CardContent>
+                        <Typography variant="h6">Total Receitas</Typography>
+                        <Typography variant="h4" color="green">
+                            R$ {pessoas?.totalReceitas?.toFixed(2) ?? 0}
+                        </Typography>
+                    </CardContent>
+                </Card>
 
-                <Grid item xs={12} md={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">Saldo Geral</Typography>
-                            <Typography variant="h4" color="primary">
-                                R$ {pessoas?.saldo?.toFixed(2) ?? 0}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
+                <Card className="dashboard-card" elevation={4}>
+                    <CardContent>
+                        <Typography variant="h6">Total Despesas</Typography>
+                        <Typography variant="h4" color="red">
+                            R$ {pessoas?.totalDespesas?.toFixed(2) ?? 0}
+                        </Typography>
+                    </CardContent>
+                </Card>
 
-            <Box mt={4} />
+                <Card className="dashboard-card" elevation={4}>
+                    <CardContent>
+                        <Typography variant="h6">Saldo Geral</Typography>
+                        <Typography variant="h4" color="primary">
+                            R$ {pessoas?.saldo?.toFixed(2) ?? 0}
+                        </Typography>
+                    </CardContent>
+                </Card>
 
-            <Typography variant="h5" gutterBottom>
-                Saldo por Pessoa
-            </Typography>
+            </div>
 
-            <PieChart width={450} height={300}>
-                <Pie
-                    data={saldoPorPessoa}
-                    dataKey="valorAbsoluto"
-                    nameKey="pessoa"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={110}
-                    label={(item: any) => `${item.pessoa}: R$ ${item.saldo}`}
-                >
-                    {saldoPorPessoa.map((p, i) => (
-                        <Cell
-                            key={i}
-                            fill={p.positivo ? "#4caf50" : "#f44336"}
-                        />
-                    ))}
-                </Pie>
+            <div className="dashboard-charts">
+                <h2 className="chart-title">Saldo por Pessoa</h2>
 
-                <Tooltip
-                    formatter={(value: number, _name, item: any) =>
-                        [`R$ ${item.payload.saldo}`, "Saldo"]
-                    }
-                />
+                <PieChart width={450} height={320}>
+                    <Pie
+                        data={saldoPorPessoa}
+                        dataKey="valorAbsoluto"
+                        nameKey="pessoa"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={110}
+                        label={(item: any) => `${item.pessoa}: R$ ${item.saldo}`}
+                    >
+                        {saldoPorPessoa.map((p, i) => (
+                            <Cell
+                                key={i}
+                                fill={p.positivo ? "#4caf50" : "#f44336"}
+                            />
+                        ))}
+                    </Pie>
 
-                <Legend />
-            </PieChart>
+                    <Tooltip
+                        formatter={(value: number, _name, item: any) =>
+                            [`R$ ${item.payload.saldo}`, "Saldo"]
+                        }
+                    />
 
-            <Box mt={4} />
+                    <Legend />
+                </PieChart>
+            </div>
 
-            <Typography variant="h5" gutterBottom>
-                Receitas x Despesas por Categoria
-            </Typography>
+            <div className="dashboard-charts">
+                <h2 className="chart-title">
+                    Receitas x Despesas por Categoria
+                </h2>
 
-            <BarChart width={700} height={350} data={categorias?.itens ?? []}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="categoria" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="totalReceitas" fill="#4caf50" name="Receitas" />
-                <Bar dataKey="totalDespesas" fill="#f44336" name="Despesas" />
-            </BarChart>
+                <BarChart width={720} height={350} data={categorias?.itens ?? []}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="categoria" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="totalReceitas" fill="#4caf50" name="Receitas" />
+                    <Bar dataKey="totalDespesas" fill="#f44336" name="Despesas" />
+                </BarChart>
+            </div>
 
-            <Box mt={4} />
-
-            <Typography variant="h5" gutterBottom>
+            {/* TABELA PESSOAS */}
+            <h2 className="chart-title">
                 Totais por Pessoa
-            </Typography>
+            </h2>
 
-            <Table>
+            <Table className="dashboard-table">
                 <TableHead>
                     <TableRow>
                         <TableCell>Pessoa</TableCell>
@@ -170,6 +160,7 @@ export default function Dashboard() {
                         <TableCell>Saldo</TableCell>
                     </TableRow>
                 </TableHead>
+
                 <TableBody>
                     {pessoas?.itens.map(p => (
                         <TableRow key={p.pessoaId}>
@@ -182,13 +173,11 @@ export default function Dashboard() {
                 </TableBody>
             </Table>
 
-            <Box mt={4} />
-
-            <Typography variant="h5" gutterBottom>
+            <h2 className="chart-title">
                 Totais por Categoria
-            </Typography>
+            </h2>
 
-            <Table>
+            <Table className="dashboard-table">
                 <TableHead>
                     <TableRow>
                         <TableCell>Categoria</TableCell>
@@ -197,6 +186,7 @@ export default function Dashboard() {
                         <TableCell>Saldo</TableCell>
                     </TableRow>
                 </TableHead>
+
                 <TableBody>
                     {categorias?.itens.map(c => (
                         <TableRow key={c.categoriaId}>
@@ -208,6 +198,9 @@ export default function Dashboard() {
                     ))}
                 </TableBody>
             </Table>
+
+            <Box mt={6} />
+
         </Container>
     );
 }

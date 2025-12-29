@@ -7,7 +7,6 @@ import {
     Typography,
     TextField,
     Button,
-    Grid,
     List,
     ListItem,
     ListItemText,
@@ -16,6 +15,9 @@ import {
     IconButton
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+
+import "../styles/Layout.css";
+import "../styles/FormListPage.css";
 
 interface Pessoa {
     id: number;
@@ -48,15 +50,12 @@ export default function Transacoes() {
     const [lista, setLista] = useState<Transacao[]>([]);
 
     const carregar = async () => {
-        try
-        {
+        try {
             setPessoas((await api.get<Pessoa[]>("/pessoas")).data);
             setCategorias((await api.get<Categoria[]>("/categorias")).data);
             setLista((await api.get<Transacao[]>("/transacoes")).data);
         }
-        catch (e)
-        {
-            console.error("Erro ao carregar dados", e);
+        catch {
             alert("Erro ao carregar dados");
         }
     };
@@ -69,14 +68,11 @@ export default function Transacoes() {
         if (!confirm("Excluir transação?"))
             return;
 
-        try
-        {
+        try {
             await api.delete(`/transacoes/${id}`);
             carregar();
         }
-        catch (e)
-        {
-            console.error("Erro ao excluir transação", e);
+        catch {
             alert("Erro ao excluir transação");
         }
     };
@@ -99,8 +95,6 @@ export default function Transacoes() {
             carregar();
         }
         catch (e: any) {
-            console.error("Erro ao salvar transação", e);
-
             const msg = e.response?.data?.message
                 ?? e.response?.data
                 ?? "Erro ao salvar transação";
@@ -110,11 +104,12 @@ export default function Transacoes() {
     };
 
     return (
-        <Container maxWidth="lg">
-            <Typography variant="h4" gutterBottom>Transações</Typography>
+        <Container className="main-container" maxWidth="lg">
+            <h1 className="page-title">Transações</h1>
 
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={5}>
+            <div className="page-content">
+
+                <div className="form-card">
                     <Card>
                         <CardContent>
                             <Typography variant="h6">Nova Transação</Typography>
@@ -179,14 +174,19 @@ export default function Transacoes() {
                                 ))}
                             </TextField>
 
-                            <Button fullWidth variant="contained" sx={{ mt: 2 }} onClick={salvar}>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 2 }}
+                                onClick={salvar}
+                            >
                                 Salvar
                             </Button>
                         </CardContent>
                     </Card>
-                </Grid>
+                </div>
 
-                <Grid item xs={12} md={7}>
+                <div className="list-card">
                     <Card>
                         <CardContent>
                             <Typography variant="h6">Histórico</Typography>
@@ -198,13 +198,16 @@ export default function Transacoes() {
                                             secondaryAction={
                                                 <IconButton
                                                     color="error"
-                                                    onClick={() => deletar(t.id)}>
+                                                    onClick={() => deletar(t.id)}
+                                                >
                                                     <DeleteIcon />
                                                 </IconButton>
-                                            }>
+                                            }
+                                        >
                                             <ListItemText
                                                 primary={`${t.descricao} - ${t.tipo.toUpperCase()} R$ ${t.valor}`}
-                                                secondary={`Pessoa: ${t.pessoa} | Categoria: ${t.categoria}`} />
+                                                secondary={`Pessoa: ${t.pessoa} | Categoria: ${t.categoria}`}
+                                            />
                                         </ListItem>
                                         <Divider />
                                     </Box>
@@ -212,8 +215,8 @@ export default function Transacoes() {
                             </List>
                         </CardContent>
                     </Card>
-                </Grid>
-            </Grid>
+                </div>
+            </div>
         </Container>
     );
 }

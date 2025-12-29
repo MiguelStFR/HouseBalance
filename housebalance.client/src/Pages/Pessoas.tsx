@@ -6,7 +6,6 @@ import {
     CardContent,
     Container,
     Divider,
-    Grid,
     IconButton,
     List,
     ListItem,
@@ -17,20 +16,19 @@ import {
 import { useEffect, useState } from "react";
 import { api } from "../Api";
 
+import "../styles/Layout.css";
+import "../styles/FormListPage.css";
+
 export default function Pessoas() {
     const [nome, setNome] = useState("");
     const [idade, setIdade] = useState<number>(0);
     const [lista, setLista] = useState<any[]>([]);
 
     const carregar = async () => {
-        try
-        {
+        try {
             const res = await api.get("/pessoas");
             setLista(res.data);
-        }
-        catch (e)
-        {
-            console.error("Erro ao carregar pessoas", e);
+        } catch {
             alert("Erro ao carregar pessoas");
         }
     };
@@ -44,43 +42,31 @@ export default function Pessoas() {
             return alert("Preencha os dados corretamente!");
 
         try {
-            await api.post("/pessoas", {
-                Nome: nome,
-                Idade: idade
-            });
-
+            await api.post("/pessoas", { Nome: nome, Idade: idade });
             setNome("");
             setIdade(0);
             carregar();
-        }
-        catch (e) {
-            console.error("Erro ao salvar pessoa", e);
+        } catch {
             alert("Erro ao salvar pessoa");
         }
     };
 
     const deletar = async (id: number) => {
-        try
-        {
+        try {
             await api.delete(`/pessoas/${id}`);
             carregar();
-        }
-        catch (e)
-        {
-            console.error("Erro ao deletar pessoa", e);
+        } catch {
             alert("Erro ao deletar pessoa");
         }
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 5 }}>
-            <Typography variant="h4" fontWeight="bold" gutterBottom>
-                Gerenciamento de Pessoas
-            </Typography>
+        <Container className="main-container" maxWidth="lg">
+            <h1 className="page-title">Gerenciamento de Pessoas</h1>
 
-            <Grid container spacing={3}>
-                {/* Formulário */}
-                <Grid item xs={12} md={5}>
+            <div className="page-content">
+
+                <div className="form-card">
                     <Card elevation={4}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
@@ -92,7 +78,7 @@ export default function Pessoas() {
                                 fullWidth
                                 margin="normal"
                                 value={nome}
-                                onChange={(e) => setNome(e.target.value)}
+                                onChange={e => setNome(e.target.value)}
                             />
 
                             <TextField
@@ -101,13 +87,12 @@ export default function Pessoas() {
                                 fullWidth
                                 margin="normal"
                                 value={idade || ""}
-                                onChange={(e) => setIdade(Number(e.target.value))}
+                                onChange={e => setIdade(Number(e.target.value))}
                             />
 
                             <Button
                                 fullWidth
                                 variant="contained"
-                                color="primary"
                                 sx={{ mt: 2 }}
                                 onClick={salvar}
                             >
@@ -115,10 +100,9 @@ export default function Pessoas() {
                             </Button>
                         </CardContent>
                     </Card>
-                </Grid>
+                </div>
 
-                {/* Lista */}
-                <Grid item xs={12} md={7}>
+                <div className="list-card">
                     <Card elevation={4}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
@@ -131,20 +115,19 @@ export default function Pessoas() {
                                 </Typography>
                             ) : (
                                 <List>
-                                    {lista.map((p) => (
+                                    {lista.map(p => (
                                         <Box key={p.id}>
                                             <ListItem
                                                 secondaryAction={
                                                     <IconButton
-                                                        edge="end"
                                                         color="error"
                                                         onClick={() => deletar(p.id)}>
-                                                        <DeleteIcon/>
+                                                        <DeleteIcon />
                                                     </IconButton>
                                                 }
                                             >
                                                 <ListItemText
-                                                    primary={`${p.nome}`}
+                                                    primary={p.nome}
                                                     secondary={`Idade: ${p.idade} anos`}
                                                 />
                                             </ListItem>
@@ -155,8 +138,9 @@ export default function Pessoas() {
                             )}
                         </CardContent>
                     </Card>
-                </Grid>
-            </Grid>
+                </div>
+
+            </div>
         </Container>
     );
 }

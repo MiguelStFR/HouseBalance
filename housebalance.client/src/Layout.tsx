@@ -10,6 +10,9 @@ import {
     Typography
 } from "@mui/material";
 
+import "./styles/Layout.css";
+import "./styles/Sidebar.css";
+
 interface MenuItem {
     text: string;
     path: string;
@@ -22,18 +25,38 @@ const menu: MenuItem[] = [
     { text: "Dashboard", path: "/dashboard" }
 ];
 
+const drawerWidth = 240;
+
 export default function Layout() {
     const location = useLocation();
 
     return (
         <Box sx={{ display: "flex" }}>
-            <AppBar className="main-container" position="fixed">
+            <AppBar
+                className="topbar"
+                position="fixed"
+                sx={{
+                    zIndex: 1300
+                }}
+            >
                 <Toolbar>
-                    <Typography className="page-title" variant="h6">HouseBalance</Typography>
+                    <Typography className="page-title" variant="h6" sx={{ fontWeight: "bold" }}>
+                        HouseBalance
+                    </Typography>
                 </Toolbar>
             </AppBar>
 
-            <Drawer variant="permanent" sx={{ width: 240 }}>
+            <Drawer
+                variant="permanent"
+                sx={{
+                    width: 240,
+                    '& .MuiDrawer-paper': {
+                        width: 240,
+                        background: '#0b3c8c',
+                        color: 'white'
+                    }
+                }}
+            >
                 <Toolbar />
                 <List>
                     {menu.map(item => (
@@ -42,6 +65,15 @@ export default function Layout() {
                             component={Link}
                             to={item.path}
                             selected={location.pathname === item.path}
+                            sx={{
+                                '&.Mui-selected': {
+                                    background: '#1565c0 !important'
+                                },
+                                '&:hover': {
+                                    background: '#1e88e5'
+                                },
+                                color: 'white'
+                            }}
                         >
                             <ListItemText primary={item.text} />
                         </ListItemButton>
@@ -49,7 +81,11 @@ export default function Layout() {
                 </List>
             </Drawer>
 
-            <Box component="main" sx={{ flexGrow: 1, ml: 30, mt: 8, p: 2 }}>
+
+            <Box
+                component="main"
+                sx={{ flexGrow: 1, ml: `${drawerWidth}px`, mt: 8 }}
+            >
                 <Outlet />
             </Box>
         </Box>
