@@ -25,7 +25,8 @@ namespace HouseBalance.Server.Controllers
                     Nome = request.Nome,
                     Idade = request.Idade
                 };
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest("Dados inválidos: " + ex.Message);
             }

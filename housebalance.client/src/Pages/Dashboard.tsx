@@ -147,7 +147,6 @@ export default function Dashboard() {
                 </BarChart>
             </div>
 
-            {/* TABELA PESSOAS */}
             <h2 className="chart-title">
                 Totais por Pessoa
             </h2>
