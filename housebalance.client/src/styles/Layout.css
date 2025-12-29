@@ -1,0 +1,15 @@
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}

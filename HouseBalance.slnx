@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="housebalance.client/housebalance.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="HouseBalance.Server/HouseBalance.Server.csproj" />
+</Solution>

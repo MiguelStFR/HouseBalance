@@ -1,0 +1,12 @@
+.page-content {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.form-card,
+.list-card {
+    width: 420px;
+}
